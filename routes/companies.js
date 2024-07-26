@@ -5,7 +5,17 @@ const db = require("../db");
 
 let router = new express.router();
 
-router.get("/", async function (req, res, next) {});
+router.get("/", async function (req, res, next) {
+  try {
+    const result = await db.query(
+      `SELECT code, name
+        FROM companies
+        ORDER BY name`
+    );
+  } catch (err) {
+    return next(err);
+  }
+});
 router.get("/", async function (req, res, next) {});
 router.post("/", async function (req, res, next) {});
 router.put("/", async function (req, res, next) {});
