@@ -21,34 +21,36 @@ router.get("/", async function (req, res, next) {
 
 // get info on a company
 router.get("/:code", async function (req, res, next) {
-    try {
-      let code = req.params.code;
-  
-      const compResult = await db.query(
-            `SELECT code, name, description
+  try {
+    let code = req.params.code;
+
+    const compResult = await db.query(
+      `SELECT code, name, description
              FROM companies
              WHERE code = $1`,
-          [code]
-      );
-  
-      const invResult = await db.query(
-            `SELECT id
+      [code]
+    );
+
+    const invResult = await db.query(
+      `SELECT id
              FROM invoices
              WHERE comp_code = $1`,
-          [code]
-      );
+      [code]
+    );
 
-      if (compResult.rows.length === 0) {
-        throw new ExpressError(`No matching company: ${code}`, 404)
-      }
-
-      const company = compResult.rows=[0];
-      const invoice = invResult.rows;
-
-      company.invoices = invoices.map(inv => inv.id);
-
-      return res.json({"company": company});
+    if (compResult.rows.length === 0) {
+      throw new ExpressError(`No matching company: ${code}`, 404);
     }
+
+    const company = (compResult.rows = [0]);
+    const invoice = invResult.rows;
+
+    company.invoices = invoices.map((inv) => inv.id);
+
+    return res.json({ company: company });
+  } catch (err) {
+    return next(err);
+  }
 });
 router.post("/", async function (req, res, next) {});
 router.put("/", async function (req, res, next) {});
