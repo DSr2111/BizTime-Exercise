@@ -5,6 +5,7 @@ const db = require("../db");
 
 let router = new express.router();
 
+// getting a list of all companies
 router.get("/", async function (req, res, next) {
   try {
     const result = await db.query(
@@ -17,6 +18,8 @@ router.get("/", async function (req, res, next) {
     return next(err);
   }
 });
+
+// get info on a company
 router.get("/:code", async function (req, res, next) {
   let code = req.params.code;
 
