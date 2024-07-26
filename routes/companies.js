@@ -17,7 +17,23 @@ router.get("/", async function (req, res, next) {
     return next(err);
   }
 });
-router.get("/", async function (req, res, next) {});
+router.get("/:code", async function (req, res, next) {
+  let code = req.params.code;
+
+  const compResult = await db.query(
+    `SELECT code, name, description
+        FROM companies
+        WHERE code = $1`,
+    [code]
+  );
+  const invResult = await db.query(
+    `
+        SELECT id
+        FROM invoices
+        WHERE comp_code = $1`,
+    [code]
+  );
+});
 router.post("/", async function (req, res, next) {});
 router.put("/", async function (req, res, next) {});
 router.delete("/", async function (req, res, next) {});
