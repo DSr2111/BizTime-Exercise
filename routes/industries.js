@@ -20,3 +20,18 @@ router.post("/", async function (req, res, next) {
     return next(err);
   }
 });
+
+router.get("/", async function (req, res, next) {
+  try {
+    const result = await db.query(`
+        SELECT i.industry, array_agg(ci.comp_code) AS company_codes
+        FROM industries i
+        LEFT JOIN company_industries ci ON i.id = ci.industry_id
+        GROUP BY i.id
+      `);
+
+    return res.json({ industries: result.rows });
+  } catch (err) {
+    return next(err);
+  }
+});
