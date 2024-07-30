@@ -34,9 +34,26 @@ router.get("/:id", async function (req, res, next) {
         WHERE id = $1`,
       [id]
     );
-  } catch (err) {
-    throw new ExpressError(`No such invoice ${id}`, 404);
-  }
+
+    if (result.rows.length === 0) {
+      throw new ExpressError(`No such invoice ${id}`, 404);
+    }
+    const data = result.rows[0];
+    const invoice = {
+      id: data.id,
+      company: {
+        code: data.comp_code,
+        name: data.name,
+        description: data.description,
+      },
+      amt: data.amt,
+      paid: data.paid,
+      add_date: data.date_added,
+      paid_date: data.paid_date,
+    };
+
+    return res.json({ invoice: invoice });
+  } catch (err) {}
 });
 
 router.post("/", async function (req, res, next) {
