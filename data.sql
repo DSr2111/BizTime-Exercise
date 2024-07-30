@@ -24,6 +24,13 @@ CREATE TABLE industries (
   industry text NOT NULL UNIQUE
 )
 
+CREATE TABLE companies_industries (
+  comp_code text NOT NULL REFERENCES companies(code) ON DELETE CASCADE,
+  industry_id integer NOT NULL REFERENCES industries(id) ON DELETE CASCADE,
+  PRIMARY KEY (comp_code, industry_id)
+)
+
+
 INSERT INTO companies
   VALUES ('apple', 'Apple Computer', 'Maker of OSX.'),
          ('ibm', 'IBM', 'Big blue.');
