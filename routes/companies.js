@@ -106,6 +106,8 @@ router.delete("/", async function (req, res, next) {
 
     if (result.rows[0] === 0) {
       throw new ExpressError(`No such company: ${code}`, 404);
+    } else {
+      return res.json({ status: "deleted" });
     }
   } catch (err) {
     next(err);
