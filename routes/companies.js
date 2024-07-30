@@ -52,6 +52,22 @@ router.get("/:code", async function (req, res, next) {
     return next(err);
   }
 });
-router.post("/", async function (req, res, next) {});
+
+// add new company
+router.post("/", async function (req, res, next) {
+  try {
+    let { name, description } = req.body;
+    let code = slugify(name, { lower: true });
+
+    const result = await db.query(
+      `INSERT INTO companies (code, name descrption)
+      VALUES ($1, $2, $3)
+      RETURN code, name, description`,
+      [code, name, description]
+    );
+  } catch (err) {
+    return next(err);
+  }
+});
 router.put("/", async function (req, res, next) {});
 router.delete("/", async function (req, res, next) {});
