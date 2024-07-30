@@ -26,15 +26,23 @@ router.get("/:code", async function (req, res, next) {
 
     const compResult = await db.query(
       `SELECT code, name, description
-             FROM companies
-             WHERE code = $1`,
+       FROM companies
+       WHERE code = $1`,
       [code]
     );
 
     const invResult = await db.query(
       `SELECT id
-             FROM invoices
-             WHERE comp_code = $1`,
+       FROM invoices
+       WHERE comp_code = $1`,
+      [code]
+    );
+
+    const indResult = await db.query(
+      `SELECT i.industry
+       FROM industries i
+       JOIN company_industries ci ON i.id = ci.industry_id
+       WHERE ci.comp_code = $1`,
       [code]
     );
 
@@ -42,10 +50,12 @@ router.get("/:code", async function (req, res, next) {
       throw new ExpressError(`No matching company: ${code}`, 404);
     }
 
-    const company = (compResult.rows = [0]);
-    const invoice = invResult.rows;
+    const company = compResult.rows[0];
+    const invoices = invResult.rows;
+    const industries = indResult.rows.map((row) => row.industry);
 
     company.invoices = invoices.map((inv) => inv.id);
+    company.industries = industries;
 
     return res.json({ company: company });
   } catch (err) {
