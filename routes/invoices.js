@@ -53,7 +53,9 @@ router.get("/:id", async function (req, res, next) {
     };
 
     return res.json({ invoice: invoice });
-  } catch (err) {}
+  } catch (err) {
+    return next(err);
+  }
 });
 
 router.post("/", async function (req, res, next) {
