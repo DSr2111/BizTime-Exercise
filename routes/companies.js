@@ -70,5 +70,20 @@ router.post("/", async function (req, res, next) {
     return next(err);
   }
 });
-router.put("/", async function (req, res, next) {});
+router.put("/", async function (req, res, next) {
+  try {
+    let { name, description } = req.body;
+    let code = req.params.code;
+
+    const result = await db.query(
+      `UPDATE companies
+      SET name=$1, description=$2
+      WHERE code = $3
+      RETURNING code, name, description`,
+      [name, description, code]
+    );
+  } catch (err) {
+    return next(err);
+  }
+});
 router.delete("/", async function (req, res, next) {});
