@@ -35,3 +35,20 @@ router.get("/", async function (req, res, next) {
     return next(err);
   }
 });
+
+router.post("/associate", async function (req, res, next) {
+  try {
+    let { comp_code, industry_id } = req.body;
+
+    const result = await db.query(
+      `INSERT INTO company_industries (comp_code, industry_id)
+         VALUES ($1, $2)
+         RETURNING comp_code, industry_id`,
+      [comp_code, industry_id]
+    );
+
+    return res.status(201).json({ association: result.rows[0] });
+  } catch (err) {
+    return next(err);
+  }
+});
