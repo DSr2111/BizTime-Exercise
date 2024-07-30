@@ -82,6 +82,12 @@ router.put("/", async function (req, res, next) {
       RETURNING code, name, description`,
       [name, description, code]
     );
+
+    if (result.rows.length === 0) {
+      throw new ExpressError(`No such company: ${code}`, 404);
+    } else {
+      return res.json({ company: result.rows[0] });
+    }
   } catch (err) {
     return next(err);
   }
