@@ -92,4 +92,22 @@ router.put("/", async function (req, res, next) {
     return next(err);
   }
 });
-router.delete("/", async function (req, res, next) {});
+
+router.delete("/", async function (req, res, next) {
+  try {
+    let code = req.params.code;
+
+    const result = await db.query(
+      `DELETE FROM companies
+      WHERE code=$1
+      RETURNING code`,
+      [code]
+    );
+
+    if (result.rows[0] === 0) {
+      throw new ExpressError(`No such company: ${code}`, 404);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
